@@ -2257,6 +2257,9 @@
     .snap-container {
       scroll-snap-type: none !important;
     }
+    .cursor, .cursor-ring {
+      display: none !important;
+    }
     section.snap-page {
       padding: 95px 16px 60px !important;
       scroll-margin-top: 0 !important;
@@ -3478,44 +3481,53 @@
   // ─── CUSTOM CURSOR ───
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursor-ring');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-  let cursorScale = 1;
-  let ringScale = 1;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX;
-    my = e.clientY;
-  }, { passive: true });
-
-  function animCursor() {
-    cursor.style.transform = `translate3d(${mx - 4}px, ${my - 4}px, 0) scale(${cursorScale})`;
-    
-    rx += (mx - rx - 16) * 0.15;
-    ry += (my - ry - 16) * 0.15;
-    ring.style.transform = `translate3d(${rx}px, ${ry}px, 0) scale(${ringScale})`;
-    
-    requestAnimationFrame(animCursor);
-  }
   
-  // Disable animating cursor on devices with reduced motion preferences
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    animCursor();
-  }
+  // Check if it's a mobile/touch device
+  const isMobileDevice = window.matchMedia('(max-width: 767px)').matches || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  
+  if (isMobileDevice) {
+    if (cursor) cursor.style.display = 'none';
+    if (ring) ring.style.display = 'none';
+  } else {
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    let cursorScale = 1;
+    let ringScale = 1;
 
-  // Add scale animation listeners for interactive elements
-  const interactives = 'a, button, .theme-panel, .grid-card, .timeline-step-dot, .score-card, .donut-segment, .rule-row, #big-play-btn, .indicator-dot';
-  document.querySelectorAll(interactives).forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursorScale = 2.0;
-      ringScale = 1.4;
-      ring.style.borderColor = 'var(--neon-pink)';
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX;
+      my = e.clientY;
+    }, { passive: true });
+
+    function animCursor() {
+      if (cursor) cursor.style.transform = `translate3d(${mx - 4}px, ${my - 4}px, 0) scale(${cursorScale})`;
+      
+      rx += (mx - rx - 16) * 0.15;
+      ry += (my - ry - 16) * 0.15;
+      if (ring) ring.style.transform = `translate3d(${rx}px, ${ry}px, 0) scale(${ringScale})`;
+      
+      requestAnimationFrame(animCursor);
+    }
+    
+    // Disable animating cursor on devices with reduced motion preferences
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      animCursor();
+    }
+
+    // Add scale animation listeners for interactive elements
+    const interactives = 'a, button, .theme-panel, .grid-card, .timeline-step-dot, .score-card, .donut-segment, .rule-row, #big-play-btn, .indicator-dot';
+    document.querySelectorAll(interactives).forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursorScale = 2.0;
+        ringScale = 1.4;
+        if (ring) ring.style.borderColor = 'var(--neon-pink)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursorScale = 1;
+        ringScale = 1;
+        if (ring) ring.style.borderColor = 'rgba(0, 240, 255, 0.4)';
+      });
     });
-    el.addEventListener('mouseleave', () => {
-      cursorScale = 1;
-      ringScale = 1;
-      ring.style.borderColor = 'rgba(0, 240, 255, 0.4)';
-    });
-  });
+  }
 
   // ─── NAV SCROLL BLUR ───
   const navHeader = document.getElementById('nav-header');
