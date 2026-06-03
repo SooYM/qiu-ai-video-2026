@@ -2133,6 +2133,19 @@
     html {
       font-size: 15px;
     }
+    .merit-card {
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center !important;
+      padding: 20px 16px !important;
+      gap: 12px !important;
+    }
+    .merit-card,
+    .merit-card div,
+    .merit-card p,
+    .merit-card span {
+      text-align: center !important;
+    }
      header {
       padding: calc(10px + env(safe-area-inset-top)) 24px 10px !important;
       display: flex !important;
@@ -2894,7 +2907,7 @@
         <div class="ticker-item">PARTICIPATION FEE <span>RM5 ONLY</span></div>
       </div>
     </div>
-    <div class="scroll-hint" onclick="document.getElementById('page-about').scrollIntoView({behavior:'smooth'})">
+    <div class="scroll-hint" onclick="smoothScrollTo('page-about')">
       <span>Scroll To Explore</span>
       <div class="scroll-line-hint"></div>
     </div>
@@ -3573,7 +3586,18 @@
   const smoothScrollTo = (targetId) => {
     const targetEl = document.getElementById(targetId);
     if (targetEl) {
-      targetEl.scrollIntoView({ behavior: 'smooth' });
+      // Defer target scroll calculations to avoid conflicts with active mobile menu transitions
+      setTimeout(() => {
+        const rect = targetEl.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetTop = rect.top + scrollTop;
+        const headerHeight = window.innerWidth <= 767 ? 70 : 80;
+        
+        window.scrollTo({
+          top: targetTop - headerHeight,
+          behavior: 'smooth'
+        });
+      }, 50);
     }
   };
 
