@@ -1901,6 +1901,12 @@
     section.snap-page {
       padding: 160px 32px 70px !important;
       scroll-margin-top: 0 !important;
+      min-height: auto !important;
+      height: auto !important;
+    }
+    .hero-inner, .content-split, .video-layout-giant, .timeline-container, .themes-layout, .scoring-container, .rules-layout, .reg-layout {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
     }
     .content-split {
       grid-template-columns: 1fr !important;
@@ -2255,7 +2261,7 @@
       padding: 95px 16px 60px !important;
       scroll-margin-top: 0 !important;
       height: auto !important;
-      min-height: 100vh !important;
+      min-height: auto !important;
       scroll-snap-align: none !important;
       scroll-snap-stop: normal !important;
       overflow-y: visible !important;
@@ -2268,6 +2274,10 @@
       grid-template-columns: 1fr;
       height: auto;
       gap: 48px;
+    }
+    .hero-inner, .content-split, .video-layout-giant, .timeline-container, .themes-layout, .scoring-container, .rules-layout, .reg-layout {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
     }
     
     /* Center all text content and headers on mobile */
